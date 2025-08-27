@@ -79,7 +79,7 @@ export default function TestPage() {
     );
   }
 
-  const questions: Question[] = test.questions || [];
+  const questions: Question[] = Array.isArray(test?.questions) ? test.questions as Question[] : [];
   const currentQuestionData = questions[currentQuestion];
   const progress = ((currentQuestion + 1) / questions.length) * 100;
 

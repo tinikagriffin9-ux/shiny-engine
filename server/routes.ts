@@ -134,7 +134,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Calculate score
-      const questions = test.questions;
+      let questions;
+      try {
+        questions = typeof test.questions === 'string' ? JSON.parse(test.questions) : test.questions;
+      } catch {
+        questions = [];
+      }
+      
       let score = 0;
       let totalQuestions = 0;
 

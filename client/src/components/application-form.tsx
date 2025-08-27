@@ -87,7 +87,7 @@ export default function ApplicationForm() {
       });
       
       // If caregiver role, redirect to test
-      if (formData.role === 'caregiver') {
+      if (formData.role === 'caregiver' && response && typeof response === 'object' && 'testId' in response) {
         window.location.href = `/test/${response.testId}`;
       }
     },

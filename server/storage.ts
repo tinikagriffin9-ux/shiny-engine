@@ -68,6 +68,8 @@ export class MemStorage implements IStorage {
       updatedAt: new Date(),
       additionalInfo: applicationData.additionalInfo || null,
       testScore: null,
+      passportUrl: applicationData.passportUrl || null,
+      credentialsUrl: applicationData.credentialsUrl || null,
     };
     this.applications.set(id, application);
     return application;
