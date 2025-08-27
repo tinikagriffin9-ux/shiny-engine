@@ -50,6 +50,28 @@ The database schema includes three main entities: users (personal information), 
 - **Document Management**: Secure upload and storage of passports and credentials
 - **Progress Tracking**: Real-time application status updates
 - **Mobile Responsive**: Optimized for both desktop and mobile devices
+- **Admin Dashboard**: Comprehensive management interface for viewing and managing all applications
+
+## Admin Dashboard Features
+- **Application Management**: View all applications with complete user details
+- **Status Updates**: Change application status (pending, testing, approved, rejected)
+- **Statistics Overview**: Real-time stats showing total applications, approvals, rejections
+- **Role Filtering**: Filter applications by healthcare role (nurse, midwife, caregiver)
+- **Document Verification**: See which applicants have uploaded required documents
+- **Test Score Tracking**: Monitor caregiver test results and pass rates
+- **Automated Approval**: Nurses and midwives with complete documents are auto-approved
+
+## Access URLs
+- **Main Website**: `/` - Public homepage and application form
+- **Admin Dashboard**: `/admin` - Management interface for administrators
+- **Application Form**: `/application` - Multi-step application process
+- **Skills Test**: `/test/:id` - Caregiver assessment test
+
+## Application Logic
+- **Nurses & Midwives**: Automatically approved when all required documents are uploaded
+- **Caregivers**: Must complete skills assessment test (70% pass rate required)
+- **Document Requirements**: Passport copy and professional credentials for all roles
+- **Status Flow**: Pending → Testing (caregivers only) → Approved/Rejected
 
 ## External Dependencies
 

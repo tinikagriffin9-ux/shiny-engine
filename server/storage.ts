@@ -7,10 +7,12 @@ export interface IStorage {
   createUser(user: InsertUser): Promise<User>;
   
   getApplication(id: string): Promise<Application | undefined>;
+  getAllApplications(): Promise<Application[]>;
   createApplication(application: Omit<InsertApplication, 'id'>): Promise<Application>;
   updateApplication(id: string, updates: Partial<Application>): Promise<Application | undefined>;
   
   getTest(id: string): Promise<Test | undefined>;
+  getTestByApplicationId(applicationId: string): Promise<Test | undefined>;
   createTest(test: Omit<InsertTest, 'id'>): Promise<Test>;
   updateTest(id: string, updates: Partial<Test>): Promise<Test | undefined>;
 }
@@ -51,12 +53,16 @@ export class MemStorage implements IStorage {
     return this.applications.get(id);
   }
 
-  async createApplication(applicationData: Omit<InsertApplication, 'id'>): Promise<Application> {
+  async getAllApplications(): Promise<Application[]> {
+    return Array.from(this.applications.values());
+  }
+
+  async createApplication(applicationData: Omit<InsertApplication, 'id'> & { status?: string }): Promise<Application> {
     const id = randomUUID();
     const application: Application = {
       ...applicationData,
       id,
-      status: 'pending',
+      status: applicationData.status || 'pending',
       testCompleted: false,
       submittedAt: new Date(),
       updatedAt: new Date(),
@@ -87,6 +93,12 @@ export class MemStorage implements IStorage {
     return this.tests.get(id);
   }
 
+  async getTestByApplicationId(applicationId: string): Promise<Test | undefined> {
+    return Array.from(this.tests.values()).find(
+      (test) => test.applicationId === applicationId,
+    );
+  }
+
   async createTest(testData: Omit<InsertTest, 'id'>): Promise<Test> {
     const id = randomUUID();
     const test: Test = {
@@ -102,7 +114,7 @@ export class MemStorage implements IStorage {
     return test;
   }
 
-  async updateTest(id: string, updates: Partial<Omit<Test, 'id' | 'startedAt'>>): Promise<Test | undefined> {
+  async updateTest(id: string, updates: Partial<Test>): Promise<Test | undefined> {
     const test = this.tests.get(id);
     if (!test) {
       return undefined;

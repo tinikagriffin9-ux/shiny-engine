@@ -69,7 +69,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
         additionalInfo: additionalInfo ? JSON.stringify({ notes: additionalInfo }) : null,
       };
 
-      const application = await storage.createApplication(applicationData);
+      // Check if application has all required documents
+      const hasAllDocuments = passportUrl && credentialsUrl;
+      let initialStatus = 'pending';
+      
+      // If all documents are uploaded, set to approved for nurses and midwives
+      if (hasAllDocuments && (role === 'nurse' || role === 'midwife')) {
+        initialStatus = 'approved';
+      }
+
+      const application = await storage.createApplication({
+        ...applicationData,
+        status: initialStatus,
+      });
 
       // Create test for caregivers
       let testId = null;
@@ -159,6 +171,61 @@ export async function registerRoutes(app: Express): Promise<Server> {
         passed: finalScore >= 70,
         message: finalScore >= 70 ? "Test passed! We'll be in touch soon." : "Test completed. We'll review your results."
       });
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Admin endpoints
+  app.get("/api/admin/applications", async (req, res) => {
+    try {
+      const applications = await storage.getAllApplications();
+      const applicationsWithUserData = await Promise.all(
+        applications.map(async (app) => {
+          const user = await storage.getUser(app.userId);
+          const test = app.testCompleted ? await storage.getTestByApplicationId(app.id) : null;
+          return {
+            ...app,
+            user,
+            test
+          };
+        })
+      );
+      res.json(applicationsWithUserData);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.patch("/api/admin/applications/:id/status", async (req, res) => {
+    try {
+      const { status } = req.body;
+      const application = await storage.updateApplication(req.params.id, { status });
+      if (!application) {
+        return res.status(404).json({ message: "Application not found" });
+      }
+      res.json(application);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.get("/api/admin/stats", async (req, res) => {
+    try {
+      const applications = await storage.getAllApplications();
+      const stats = {
+        total: applications.length,
+        pending: applications.filter(app => app.status === 'pending').length,
+        testing: applications.filter(app => app.status === 'testing').length,
+        approved: applications.filter(app => app.status === 'approved').length,
+        rejected: applications.filter(app => app.status === 'rejected').length,
+        byRole: {
+          nurse: applications.filter(app => app.role === 'nurse').length,
+          midwife: applications.filter(app => app.role === 'midwife').length,
+          caregiver: applications.filter(app => app.role === 'caregiver').length,
+        }
+      };
+      res.json(stats);
     } catch (error: any) {
       res.status(500).json({ message: error.message });
     }
