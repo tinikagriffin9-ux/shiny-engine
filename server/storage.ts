@@ -60,6 +60,8 @@ export class MemStorage implements IStorage {
       testCompleted: false,
       submittedAt: new Date(),
       updatedAt: new Date(),
+      additionalInfo: applicationData.additionalInfo || null,
+      testScore: null,
     };
     this.applications.set(id, application);
     return application;
@@ -93,12 +95,14 @@ export class MemStorage implements IStorage {
       completed: false,
       startedAt: new Date(),
       completedAt: null,
+      answers: null,
+      score: null,
     };
     this.tests.set(id, test);
     return test;
   }
 
-  async updateTest(id: string, updates: Partial<Test>): Promise<Test | undefined> {
+  async updateTest(id: string, updates: Partial<Omit<Test, 'id' | 'startedAt'>>): Promise<Test | undefined> {
     const test = this.tests.get(id);
     if (!test) {
       return undefined;

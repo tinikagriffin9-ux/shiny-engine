@@ -24,7 +24,7 @@ export default function TestPage() {
   const [answers, setAnswers] = useState<Record<string, number>>({});
   const { toast } = useToast();
 
-  const { data: test, isLoading } = useQuery({
+  const { data: test, isLoading } = useQuery<Test>({
     queryKey: ["/api/tests", testId],
     enabled: !!testId,
   });

@@ -39,7 +39,6 @@ export default function Footer() {
               <li><a href="#opportunities" className="text-primary-foreground/80 hover:text-white transition-colors" data-testid="link-opportunities">Opportunities</a></li>
               <li><a href="#process" className="text-primary-foreground/80 hover:text-white transition-colors" data-testid="link-process">Process</a></li>
               <li><a href="#countries" className="text-primary-foreground/80 hover:text-white transition-colors" data-testid="link-countries">Countries</a></li>
-              <li><a href="#" className="text-primary-foreground/80 hover:text-white transition-colors" data-testid="link-success">Success Stories</a></li>
               <li><a href="#" className="text-primary-foreground/80 hover:text-white transition-colors" data-testid="link-contact">Contact Us</a></li>
             </ul>
           </div>

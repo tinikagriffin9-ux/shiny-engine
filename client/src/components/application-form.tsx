@@ -41,7 +41,7 @@ type DocumentsForm = z.infer<typeof documentsSchema>;
 export default function ApplicationForm() {
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState<any>({});
-  const [uploadedFiles, setUploadedFiles] = useState<any>({});
+  const [uploadedFiles, setUploadedFiles] = useState<Record<string, File>>({});
   const { toast } = useToast();
 
   const personalForm = useForm<PersonalInfoForm>({
@@ -88,8 +88,7 @@ export default function ApplicationForm() {
       
       // If caregiver role, redirect to test
       if (formData.role === 'caregiver') {
-        const data = response.json();
-        window.location.href = `/test/${data.testId}`;
+        window.location.href = `/test/${response.testId}`;
       }
     },
     onError: (error) => {
@@ -111,7 +110,7 @@ export default function ApplicationForm() {
   ];
 
   const handleNextStep = async (data: any) => {
-    setFormData(prev => ({ ...prev, ...data }));
+    setFormData((prev: any) => ({ ...prev, ...data }));
     if (currentStep < 4) {
       setCurrentStep(prev => prev + 1);
     }
@@ -124,7 +123,7 @@ export default function ApplicationForm() {
   };
 
   const handleFileUpload = (fileType: 'passport' | 'credentials', file: File) => {
-    setUploadedFiles(prev => ({ ...prev, [fileType]: file }));
+    setUploadedFiles((prev: Record<string, File>) => ({ ...prev, [fileType]: file }));
   };
 
   const handleFinalSubmit = async () => {
@@ -444,7 +443,7 @@ export default function ApplicationForm() {
             <p className="text-muted-foreground text-sm">
               After submitting your application, we'll review your documents and credentials. 
               {formData.role === 'caregiver' && ' You will then be directed to complete a skills assessment test.'}
-              {formData.role !== 'caregiver' && ' We'll be in touch within 2-3 business days with the next steps.'}
+              {formData.role !== 'caregiver' && ' We\'ll be in touch within 2-3 business days with the next steps.'}
             </p>
           </div>
 

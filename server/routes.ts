@@ -30,7 +30,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userData = insertUserSchema.parse(req.body);
       const user = await storage.createUser(userData);
       res.json(user);
-    } catch (error) {
+    } catch (error: any) {
       res.status(400).json({ message: error.message });
     }
   });
@@ -88,7 +88,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         testId,
         message: "Application submitted successfully"
       });
-    } catch (error) {
+    } catch (error: any) {
       res.status(400).json({ message: error.message });
     }
   });
@@ -101,7 +101,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Test not found" });
       }
       res.json(test);
-    } catch (error) {
+    } catch (error: any) {
       res.status(500).json({ message: error.message });
     }
   });
@@ -159,7 +159,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         passed: finalScore >= 70,
         message: finalScore >= 70 ? "Test passed! We'll be in touch soon." : "Test completed. We'll review your results."
       });
-    } catch (error) {
+    } catch (error: any) {
       res.status(500).json({ message: error.message });
     }
   });
